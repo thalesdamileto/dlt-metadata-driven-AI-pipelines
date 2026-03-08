@@ -1,6 +1,5 @@
 [
     {
-    "id": "90ef8783-89d4-44ca-b3a0-26eabc5eedf7",
     "pipeline_type": "WORKSPACE",
     "name": "dlt_volume_to_json-bronze.dbo.iss_data",
     "configuration": {
