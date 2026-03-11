@@ -26,3 +26,17 @@ The Gold layer represents the final stage of the data pipeline, where high-quali
 - Aggregation of data for reporting
 - High-performance queries and optimization
 - Secure and governed access to data
+
+
+### Initial scripts to run on databricks
+create catalog if not exists bronze  
+create catalog if not exists silver  
+create catalog if not exists gold  
+
+create table workspace.default.pipelines_watermark
+(
+destination_table string,
+contract_id string,
+watermark_column string,
+watermark_value timestamp
+)
