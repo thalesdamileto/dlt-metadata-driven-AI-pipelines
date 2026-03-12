@@ -5,6 +5,9 @@ from pyspark.sql.window import Window
 from delta.tables import DeltaTable
 from datetime import datetime
 
+from pipelines_notebooks_templates.0-helpers.general_helpers import *
+from pipelines_notebooks_templates.0-helpers.quality_helpers import *
+
 # COMMAND ----------
 
 # Initialize parameters
