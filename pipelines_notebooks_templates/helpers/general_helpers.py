@@ -1,4 +1,5 @@
 import json
+import os
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from datetime import datetime
@@ -26,11 +27,10 @@ TYPE_MAPPING = {
     "binary": BinaryType()
 }
 
-CONTRACT_FILE = "/Workspace/Users/thalesfmorais94@gmail.com/dlt-metadata-driven-AI-pipelines/pipelines_metadata/2-silver/contracts.json"
+def get_data_contract(repo_root:str, contract_id: str) -> dict:
+    contract_file = f"{repo_root}/pipelines_metadata/silver/contracts.json"
 
-def get_data_contract(contract_id: str) -> dict:
-
-    with open(CONTRACT_FILE, "r") as f:
+    with open(contract_file, "r") as f:
         data = json.load(f)
 
     for contract in data["contract_list"]:
@@ -39,17 +39,17 @@ def get_data_contract(contract_id: str) -> dict:
 
     raise ValueError(f"Contract_id {contract_id} não encontrado")
 
-def get_watermark(contract_id:str , watermark_table: str = WATERMARK_TABLE) -> str:
+def get_watermark(spark, contract_id:str , watermark_table: str = WATERMARK_TABLE) -> str:
     watermark_df = spark.read.table(watermark_table)
     try:
         watermark = watermark_df.select(col("watermark_value")).filter(col("contract_id") == contract_id).collect()[0][0]
         return watermark
     
-    except:
-        print(f"Watermark not found for contract_id {contract_id}, assuming first run with full table processing.")
+    except Exception as error:
+        print(f"Watermark not found for contract_id {contract_id}, assuming first run with full table processing. {error}")
         return None
 
-def update_watermark(destination_table:str, contract_id:str, watermark_column:str, new_watermark_value:datetime, watermark_table: str = WATERMARK_TABLE):
+def update_watermark(spark, destination_table:str, contract_id:str, watermark_column:str, new_watermark_value:datetime, watermark_table: str = WATERMARK_TABLE):
     try:
         spark.sql(f"""
             MERGE INTO {watermark_table} AS t
@@ -60,9 +60,13 @@ def update_watermark(destination_table:str, contract_id:str, watermark_column:st
                 '{new_watermark_value}' AS watermark_value
             ) AS s
             ON t.contract_id = s.contract_id
-            WHEN MATCHED THEN UPDATE SET watermark_value = s.watermark_value
-            WHEN NOT MATCHED THEN INSERT (contract_id, watermark_value) VALUES (s.contract_id, s.watermark_value)
+            WHEN MATCHED THEN UPDATE SET 
+                destination_table = s.destination_table,
+                watermark_column = s.watermark_column,
+                watermark_value = s.watermark_value
+            WHEN NOT MATCHED THEN INSERT 
+                (destination_table, contract_id, watermark_column, watermark_value) 
+                VALUES (s.destination_table, s.contract_id, s.watermark_column, s.watermark_value)
         """)   
-    except:
-        print(f"Error updating watermark for contract_id {contract_id}.")
-    
+    except Exception as error:
+        print(f"Error updating watermark for contract_id {contract_id}. {error}")
