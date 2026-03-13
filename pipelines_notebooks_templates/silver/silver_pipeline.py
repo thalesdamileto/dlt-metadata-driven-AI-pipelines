@@ -1,5 +1,4 @@
 # Databricks notebook source
-
 # Imports
 import json
 from pyspark.sql.functions import col, lit, row_number
@@ -7,12 +6,12 @@ from pyspark.sql.window import Window
 from delta.tables import DeltaTable
 from datetime import datetime
 
-from pipelines_notebooks_templates.0-helpers.general_helpers import TYPE_MAPPING, get_data_contract, get_watermark, update_watermark
-from pipelines_notebooks_templates.0-helpers.quality_helpers import execute_quality_procedures
+from pipelines_notebooks_templates.helpers.general_helpers import TYPE_MAPPING, get_data_contract, get_watermark, update_watermark
+from pipelines_notebooks_templates.helpers.quality_helpers import execute_quality_procedures
 
 # COMMAND ----------
-# DBTITLE 1, Initialize parameters
 
+# DBTITLE 1, Initialize parameters
 # Source table
 dbutils.widgets.text("source_table", "")
 source_table = dbutils.widgets.get("source_table")
@@ -33,6 +32,7 @@ ordering_column = data_contract["parameters"]["ordering_column"]
 quality_procedures = data_contract["parameters"]["quality_procedures"]
 
 # COMMAND ----------
+
 # DBTITLE 1, READING DATA
 def apply_contract(contract: dict, bronze_table):
 
@@ -72,6 +72,7 @@ print(watermark_value)
 silver_df = apply_contract(data_contract, bronze_table)
 
 # COMMAND ----------
+
 # DBTITLE 1, CHECKING IF THERE IS NEW DATA
 if silver_df.head(1):
     new_data = True
@@ -80,6 +81,7 @@ else:
     print("No new data found. skiping Ingestion.")
 
 # COMMAND ----------
+
 # DBTITLE 1, DATA QUALITY ACTIONS
 if new_data:
     # Dedup Rows
