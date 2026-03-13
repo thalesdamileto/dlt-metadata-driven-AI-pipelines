@@ -45,7 +45,7 @@ procedures_map = {
     "strip_str_columns": strip_str_columns
 }
 
-def execute_quality_procedures(dataframe, quality_procedures):
+def execute_quality_procedures(spark, dataframe, quality_procedures):
     df = dataframe
     
     for procedure_name, column in quality_procedures.items():

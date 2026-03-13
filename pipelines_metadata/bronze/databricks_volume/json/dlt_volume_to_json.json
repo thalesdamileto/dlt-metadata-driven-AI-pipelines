@@ -11,7 +11,7 @@
     "libraries": [
         {
         "glob": {
-            "include": "/Workspace/Users/thalesfmorais94@gmail.com/dlt-metadata-driven-AI-pipelines/notebooks/1-bronze/databricks_volume/json/dlt_volume_json_pipeline.py"
+            "include": "/Workspace/Users/thalesfmorais94@gmail.com/dlt-metadata-driven-AI-pipelines/notebooks/bronze/databricks_volume/json/dlt_volume_json_pipeline.py"
         }
         }
     ],
