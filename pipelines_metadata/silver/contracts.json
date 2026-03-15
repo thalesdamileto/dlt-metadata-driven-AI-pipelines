@@ -69,8 +69,7 @@
 				},
 				"quality_procedures":{
 					"lower_case_columns":"message",
-					"strip_str_columns": "message",
-					"upper_case_columns":"message"
+					"strip_str_columns": "message"
 				}
 			}
 		}
