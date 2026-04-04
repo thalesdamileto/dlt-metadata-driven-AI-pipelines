@@ -8,6 +8,7 @@ source_path = spark.conf.get("source_path")
 target_schema = spark.conf.get("target_schema")
 target_table = spark.conf.get("target_table")
 description = spark.conf.get("description")
+separator = spark.conf.get("separator", "\t")
 
 # COMMAND ----------
 
@@ -24,12 +25,12 @@ schema_path = f"/Volumes/workspace/default/schemas/{target_catalog}/{target_sche
     name=target_table,  # DLT já sabe o schema do pipeline
     comment=f"Bronze delta table: {full_table_name}. Description: {description}"
 )
-def iss_raw():
+def dlt_csv_table_raw():
     return (
         spark.readStream
             .format("cloudFiles")
             .option("cloudFiles.format", "csv")
-            .option("sep","\t")
+            .option("sep", separator)
             .option("cloudFiles.inferColumnTypes", "true")
             .option("cloudFiles.schemaLocation", schema_path)
             .load(source_path)
