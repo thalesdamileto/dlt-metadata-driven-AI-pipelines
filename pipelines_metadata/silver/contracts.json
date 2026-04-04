@@ -29,7 +29,7 @@
 					"table":"iss_data"
 				},
 				"pk_columns":"timestamp",
-        "watermark_column":"ingested_at",
+        		"watermark_column":"ingested_at",
 				"ordering_column": "ingested_at",
 				"column_mapping":[
 					{

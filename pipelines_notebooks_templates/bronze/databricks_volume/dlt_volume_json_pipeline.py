@@ -24,7 +24,7 @@ schema_path = f"/Volumes/workspace/default/schemas/{target_catalog}/{target_sche
     name=target_table,  # DLT já sabe o schema do pipeline
     comment=f"Bronze delta table: {full_table_name}. Description: {description}"
 )
-def iss_raw():
+def dlt_json_table_raw():
     return (
         spark.readStream
             .format("cloudFiles")
